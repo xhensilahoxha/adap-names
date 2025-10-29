@@ -14,29 +14,15 @@ import { Printable } from "../common/Printable";
  */
 export interface Name extends Printable {
 
-    /**
-     * Returns true, if number of components == 0; else false
-     */
     isEmpty(): boolean;
-
-    /** 
-     * Returns number of components in Name instance
-     */
     getNoComponents(): number;
-
     getComponent(i: number): string;
 
-    /** Expects that new Name component c is properly masked */
     setComponent(i: number, c: string): void;
-
-    /** Expects that new Name component c is properly masked */
     insert(i: number, c: string): void;
-
-    /** Expects that new Name component c is properly masked */
     append(c: string): void;
-
     remove(i: number): void;
-    
+
     concat(other: Name): void;
     
 }
