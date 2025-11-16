@@ -11,7 +11,11 @@ export class StringName implements Name {
         this.name = source;
         if(delimiter) this.delimiter = delimiter;
         //count components 
-        this.noComponents = this.name === "" ? 0 : this.name.split(this.delimiter).length;
+        if (source === ""){
+        this.noComponents = 1;            // One empty component
+        }else{
+        this.noComponents = source.split(this.delimiter).length;
+    }
     }
 
     public asString(delimiter: string = this.delimiter): string {
@@ -74,7 +78,7 @@ export class StringName implements Name {
 
     /** return true if name has 0 components */
     public isEmpty(): boolean {
-        return this.name.length === 0;
+        return this.noComponents === 0;
     }
 
     /** return the number of components */
@@ -118,23 +122,50 @@ export class StringName implements Name {
     }
 
     /** append the component at the end of name */
+    // 3 cases
+    // noComponents == 0
+    // noComponents == 1 && name == ""
+    // base case
     public append(c: string): void {
-       if(this.name === "") this.name = c;
-       else this.name += this.delimiter +c;
-       this.noComponents++;
+        if(this.noComponents === 0){
+            // No components
+            this.name = c;
+            this.noComponents = 1;
+        }else if(this.noComponents === 1 && this.name === ""){
+            // One empty component
+            this.name = this.delimiter + c;
+            this.noComponents = 2;
+        }else{
+            // Normal case
+            this.name += this.delimiter + c;
+            this.noComponents++;
+        }
     }
 
     /** remove the component at the given index */
     public remove(n: number): void {
-        const components= this.name === '' ? []: this.name.split(this.delimiter);
-        if(n<0 || n>= components.length){
-            throw new RangeError('Index out of range');
+        let components: string[];
+        if(this.noComponents === 0){
+            components = [];
+        }else if(this.noComponents === 1 && this.name === ''){
+            //One empty component
+            components = ['']; 
+        }else{
+            components = this.name.split(this.delimiter);
         }
         components.splice(n, 1);
-
-        this.name = components.join(this.delimiter);
-        this.noComponents = components.length;
-
+        
+        // Manual reconstruction of the components dependent on their meaning
+        if(components.length === 0){
+            this.name = '';
+            this.noComponents = 0;
+        }else if(components.length === 1 && components[0] === ''){
+            this.name = '';
+            this.noComponents = 1;
+        }else{
+            this.name = components.join(this.delimiter);
+            this.noComponents = components.length;
+        }
     }
 
     /** concatenate components from another instance(Name) onto this one*/
