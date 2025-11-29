@@ -2,68 +2,74 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 
-export class StringArrayName extends AbstractName {
+export class StringArrayName extends AbstractName{
 
     protected components: string[] = [];
 
-    constructor(source: string[], delimiter?: string) {
-        super();
-        throw new Error("needs implementation or deletion");
+    constructor(source: string[], delimiter?: string){
+        super(delimiter ?? DEFAULT_DELIMITER);
+
+        //shallow copy: keep internal array private
+        this.components = [...source];
+
+        //class invariant inclussion after construction
+        this.assertClassInvariant();
+        
     }
 
-    public clone(): Name {
-        throw new Error("needs implementation or deletion");
+    public clone(): Name{
+        //same delimiter and masked components
+        return new StringArrayName(this.components, this.delimiter);
     }
 
-    public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+    /** asString, asDataString, isEqual, getHashCode, isEmpty, getDelimiterCharacter
+        are inherited from AbstractName.
+    */
+
+    public getNoComponents(): number{
+        return this.components.length;
     }
 
-    public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+    public getComponent(i: number): string{
+        //use of precondition
+        this.assertValidIndexAsPrecondition(i);
+        // return still masked component
+        return this.components[i];
     }
 
-    public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
+    public setComponent(i: number, c: string): void{
+        //use of precondition
+        this.assertValidIndexAsPrecondition(i);
+
+        this.components[i] = c;
+
+        //use of invariant: after mutation
+        this.assertClassInvariant();
     }
 
-    public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+    public insert(i: number, c: string): void{
+        this.assertValidInsertIndexAsPrecondition(i);
+        
+        // insert c at index i
+        this.components.splice(i, 0, c);
+
+        this.assertClassInvariant();
     }
 
-    public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+    public append(c: string): void{
+        // add component to the end
+        this.components.push(c);
+
+        this.assertClassInvariant();
     }
 
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+    public remove(i: number): void{
+
+        this.assertValidIndexAsPrecondition(i);
+        // remove component at index i
+        this.components.splice(i, 1);
+
+        this.assertClassInvariant();
     }
 
-    public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public append(c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
-    }
 }
