@@ -1,6 +1,10 @@
 import { Name } from "../names/Name";
 import { StringName } from "../names/StringName";
 import { Directory } from "./Directory";
+import { Node } from "./Node";
+
+import { ServiceFailureException } from "../common/ServiceFailureException";
+import { Exception } from "../common/Exception";
 
 export class RootNode extends Directory {
 
@@ -29,5 +33,18 @@ export class RootNode extends Directory {
     protected doSetBaseName(bn: string): void {
         // null operation
     }
-
+    
+    /** Service-level entry point for the file system
+    - detects component failures
+    - translates them into a -ServiceFailureException- */
+    public override findNodes(name: string | Name): Set<Node> {
+        try {
+            // Let Directory do the real work
+            return super.findNodes(name);
+        } catch (e) {
+            // Wrap any internal exception as a service failure
+            const ex = e as Exception;
+            throw new ServiceFailureException("file system service failed in findNodes()", ex);
+        }
+    }
 }
