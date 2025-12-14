@@ -15,4 +15,9 @@ export class IllegalArgumentException extends Exception {
         super(m, t);
     }
 
+    public getTrigger(): Exception {
+        InvalidStateException.assert(this.hasTrigger());
+        return super.getTrigger();
+    }
+
 }
