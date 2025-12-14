@@ -1,8 +1,9 @@
-export interface Cloneable {
+// make it work for generic implementation
+export interface Cloneable<T> {
 
     /**
      * Returns shallow copy (clone) of this object
      */
-    clone(): Object; // @todo Clarify use of Objects vs object
+    clone(): T; // @todo Clarify use of Objects vs object
 
 }
